@@ -37,7 +37,7 @@ namespace UdemyAuthServer.Service
             return Convert.ToBase64String(numberByte);
         }
 
-        private IEnumerable<Claim> GetClaim(UserApp userApp,List<String> audiences)
+        private IEnumerable<Claim> GetClaims(UserApp userApp,List<String> audiences)
         {
             // Claim ler payload da gözükecek. Birer claim olarak ekledik Payloadlar jwt sitesinde örnek datalardan bulabilirsin.
 
@@ -52,6 +52,19 @@ namespace UdemyAuthServer.Service
             userList.AddRange(audiences.Select(x => new Claim(JwtRegisteredClaimNames.Aud, x)));
 
             return userList;
+        }
+
+
+        // bu metot üyelik sistemi yoksa gibi çalışır. Id ve Secret key e göre
+        private IEnumerable<Claim> GetClaimsByClient(Client client)
+        {
+            var claims=new List<Claim>();
+            claims.AddRange(client.Audiences.Select(x => new Claim(JwtRegisteredClaimNames.Aud,x)));
+
+            new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString());
+            new Claim(JwtRegisteredClaimNames.Sub, client.Id.ToString());
+
+            return claims;
         }
 
         public TokenDto CreateToken(UserApp userApp)
