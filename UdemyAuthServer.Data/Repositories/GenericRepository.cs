@@ -35,6 +35,7 @@ namespace UdemyAuthServer.Data.Repositories
         {
             var entity = await _dbSet.FindAsync(id);
             if(entity!=null)
+                // Detached olarak işaretlememizin sebebi memory de track edilmesin!!!
                 _context.Entry(entity).State = EntityState.Detached;
 
             return entity;
