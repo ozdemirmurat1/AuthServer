@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using SharedLibrary.Configuration;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ using UdemyAuthServer.Core.Configuration;
 using UdemyAuthServer.Core.DTOs;
 using UdemyAuthServer.Core.Models;
 using UdemyAuthServer.Core.Services;
+using UdemyAuthServer.Service.Services;
 
 namespace UdemyAuthServer.Service
 {
@@ -69,12 +71,70 @@ namespace UdemyAuthServer.Service
 
         public TokenDto CreateToken(UserApp userApp)
         {
-            throw new NotImplementedException();
+            var accessTokenExpiration = DateTime.Now.AddMinutes(_tokenOption.AccessTokenExpiration);
+            var refreshTokenExpiration = DateTime.Now.AddMinutes(_tokenOption.RefreshTokenExpiration);
+            var securityKey = SignService.GetSymmetricSecurityKey(_tokenOption.SecurityKey);
+
+            SigningCredentials signingCredentials = new SigningCredentials(securityKey,SecurityAlgorithms.HmacSha256Signature);
+
+            JwtSecurityToken jwtSecurityToken = new JwtSecurityToken
+                (
+                   issuer:_tokenOption.Issuer,
+                   expires:accessTokenExpiration,
+                   notBefore:DateTime.Now,
+                   claims:GetClaims(userApp,_tokenOption.Audience),
+                   signingCredentials:signingCredentials
+                );
+
+            var handler = new JwtSecurityTokenHandler();
+
+
+            // aşağıda token ürettik
+            var token=handler.WriteToken(jwtSecurityToken);
+
+            var tokenDto = new TokenDto
+            {
+                AccessToken = token,
+                RefreshToken = CreateRefreshToken(),
+                AccessTokenExpiration=accessTokenExpiration,
+                RefreshTokenExpiration=refreshTokenExpiration
+            };
+
+            return tokenDto;
         }
 
+
+        // Üyelik sistemi barındırmaz.
         public ClientTokenDto CreateTokenByClient(Client client)
         {
-            throw new NotImplementedException();
+            var accessTokenExpiration = DateTime.Now.AddMinutes(_tokenOption.AccessTokenExpiration);
+            
+            var securityKey = SignService.GetSymmetricSecurityKey(_tokenOption.SecurityKey);
+
+            SigningCredentials signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
+
+            JwtSecurityToken jwtSecurityToken = new JwtSecurityToken
+                (
+                   issuer: _tokenOption.Issuer,
+                   expires: accessTokenExpiration,
+                   notBefore: DateTime.Now,
+                   claims: GetClaimsByClient(client),
+                   signingCredentials: signingCredentials
+                );
+
+            var handler = new JwtSecurityTokenHandler();
+
+
+            // aşağıda token ürettik
+            var token = handler.WriteToken(jwtSecurityToken);
+
+            var tokenDto = new ClientTokenDto
+            {
+                AccessToken = token,
+                AccessTokenExpiration = accessTokenExpiration,
+            };
+
+            return tokenDto;
         }
     }
 }

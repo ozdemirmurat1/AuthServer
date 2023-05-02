@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using UdemyAuthServer.Core.Configuration;
 
 namespace UdemyAuthServer.API
 {
@@ -30,6 +31,9 @@ namespace UdemyAuthServer.API
             // CustomTokenOption TokenOptions daki parametreleri doldurup bize bir nesne örneði verecek.
 
             services.Configure<CustomTokenOption>(Configuration.GetSection("TokenOption"));
+
+            // Client Clients deki parametreleri doldurup bize bir nesne örneði verecek.
+            services.Configure<Client>(Configuration.GetSection("Clients"));
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
