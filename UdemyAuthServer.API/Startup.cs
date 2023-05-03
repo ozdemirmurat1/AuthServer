@@ -33,7 +33,7 @@ namespace UdemyAuthServer.API
             services.Configure<CustomTokenOption>(Configuration.GetSection("TokenOption"));
 
             // Client Clients deki parametreleri doldurup bize bir nesne örneði verecek.
-            services.Configure<Client>(Configuration.GetSection("Clients"));
+            services.Configure<List<Client>>(Configuration.GetSection("Clients"));
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
