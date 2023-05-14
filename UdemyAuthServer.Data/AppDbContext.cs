@@ -11,7 +11,7 @@ using UdemyAuthServer.Core.Models;
 namespace UdemyAuthServer.Data
 {
     // Üyelik ile de ilgili işlem yapacağımız için IdentityDbContext i kullandık. DbContext yerine
-    // IdentityDbContext Role , Claim ve Token ları tutar 
+    // IdentityDbContext Role , Claim ve Token ları tutar . aşağıdaki string değeri Id'nin string olmasını sağlar
     public class AppDbContext:IdentityDbContext<UserApp,IdentityRole,string>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options):base(options) 
