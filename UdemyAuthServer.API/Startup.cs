@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -68,10 +69,34 @@ namespace UdemyAuthServer.API
 
             // CustomTokenOption TokenOptions daki parametreleri doldurup bize bir nesne örneði verecek.
 
-            services.Configure<CustomTokenOption>(Configuration.GetSection("TokenOption"));
+            services.Configure<CustomTokenOption>(Configuration.GetSection("TokenOption"));           
 
             // Client Clients deki parametreleri doldurup bize bir nesne örneði verecek.
             services.Configure<List<Client>>(Configuration.GetSection("Clients"));
+
+            services.AddAuthentication(options =>
+            {
+                // Bayiler ve normal müþteriler için ayrý üyelik sistemi olabilir buna 'Þema' diyoruz.
+
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+            }).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, opts =>
+            {
+                var tokenOptions = Configuration.GetSection("TokenOption").Get<CustomTokenOption>();
+                opts.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
+                {
+                    ValidIssuer = tokenOptions.Issuer,
+                    ValidAudience = tokenOptions.Audience[0],
+                    IssuerSigningKey = SignService.GetSymmetricSecurityKey(tokenOptions.SecurityKey),
+
+                    ValidateIssuerSigningKey=true,
+                    ValidateAudience=true,
+                    ValidateIssuer=true,
+                    ValidateLifetime=true,
+                    ClockSkew=TimeSpan.Zero
+                };
+            });
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
