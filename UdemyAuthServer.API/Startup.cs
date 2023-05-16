@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using SharedLibrary.Configuration;
+using SharedLibrary.Extensions;
 using SharedLibrary.Services;
 using System;
 using System.Collections.Generic;
@@ -100,12 +101,17 @@ namespace UdemyAuthServer.API
                 };
             });
 
+            
+
             services.AddControllers().AddFluentValidation(options=> 
             {
                 // AbstractValidator nesnesini miras alan assembly leri bul.
                 options.RegisterValidatorsFromAssemblyContaining<Startup>();
             
             });
+
+            services.UseCustomValidationResponse();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "UdemyAuthServer.API", Version = "v1" });
