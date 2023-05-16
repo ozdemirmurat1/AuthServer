@@ -1,3 +1,4 @@
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -99,7 +100,12 @@ namespace UdemyAuthServer.API
                 };
             });
 
-            services.AddControllers();
+            services.AddControllers().AddFluentValidation(options=> 
+            {
+                // AbstractValidator nesnesini miras alan assembly leri bul.
+                options.RegisterValidatorsFromAssemblyContaining<Startup>();
+            
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "UdemyAuthServer.API", Version = "v1" });
