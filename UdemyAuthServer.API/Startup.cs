@@ -128,6 +128,9 @@ namespace UdemyAuthServer.API
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "UdemyAuthServer.API v1"));
             }
 
+            // Ýlk önce exception metoda girsin
+            app.UseCustomException();
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
