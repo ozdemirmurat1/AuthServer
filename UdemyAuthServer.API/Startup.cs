@@ -42,73 +42,11 @@ namespace UdemyAuthServer.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // DI Register
-
-            services.AddScoped<IAuthenticationService, AuthenticationService>();
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<ITokenService,TokenService>();
-            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            // araya virgül koymamýzýn sebebi 2 tane generic type alamasý
-            services.AddScoped(typeof(IServiceGeneric<,>), typeof(ServiceGeneric<,>));
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-            services.AddDbContext<AppDbContext>(options =>
-            {
-                options.UseSqlServer(Configuration.GetConnectionString("SqlServer"), sqlOptions =>
-                {
-                    //UdemyAuthServer.Data katmanýnda migration iþlemi yapýcaz o yüzden bu ismi kullandýk
-                    sqlOptions.MigrationsAssembly("UdemyAuthServer.Data");
-                });
-            });
-
-            services.AddIdentity<UserApp, IdentityRole>(Opt =>
-            {
-                Opt.User.RequireUniqueEmail = true;
-                Opt.Password.RequireNonAlphanumeric = false;
-
-            }).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
-            // Þifre sýrfýrlama iþlemlerinde default token saðlamak için .AddDefaultTokenProviders ekledik.
 
 
-            // CustomTokenOption TokenOptions daki parametreleri doldurup bize bir nesne örneði verecek.
 
-            services.Configure<CustomTokenOption>(Configuration.GetSection("TokenOption"));           
 
-            // Client Clients deki parametreleri doldurup bize bir nesne örneði verecek.
-            services.Configure<List<Client>>(Configuration.GetSection("Clients"));
-
-            services.AddAuthentication(options =>
-            {
-                // Bayiler ve normal müþteriler için ayrý üyelik sistemi olabilir buna 'Þema' diyoruz.
-
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-
-            }).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, opts =>
-            {
-                var tokenOptions = Configuration.GetSection("TokenOption").Get<CustomTokenOption>();
-                opts.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
-                {
-                    ValidIssuer = tokenOptions.Issuer,
-                    ValidAudience = tokenOptions.Audience[0],
-                    IssuerSigningKey = SignService.GetSymmetricSecurityKey(tokenOptions.SecurityKey),
-
-                    ValidateIssuerSigningKey=true,
-                    ValidateAudience=true,
-                    ValidateIssuer=true,
-                    ValidateLifetime=true,
-                    ClockSkew=TimeSpan.Zero
-                };
-            });
-
-            
-
-            services.AddControllers().AddFluentValidation(options=> 
-            {
-                // AbstractValidator nesnesini miras alan assembly leri bul.
-                options.RegisterValidatorsFromAssemblyContaining<Startup>();
-            
-            });
+            services.AddControllers();
 
             services.UseCustomValidationResponse();
 

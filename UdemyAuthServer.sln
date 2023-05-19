@@ -17,7 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniApp3.API", "MiniApp3.AP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedLibrary", "SharedLibrary\SharedLibrary.csproj", "{286C642A-19E7-4002-8E75-211E59579766}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UdemyAuthServer.Core", "UdemyAuthServer.Core\UdemyAuthServer.Core.csproj", "{9318A7A4-67B9-4335-8FB5-C4F75DFCD434}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UdemyAuthServer.Core", "UdemyAuthServer.Core\UdemyAuthServer.Core.csproj", "{9318A7A4-67B9-4335-8FB5-C4F75DFCD434}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplicationCheck", "WebApplicationCheck\WebApplicationCheck.csproj", "{50B01E77-9144-4095-847B-13260A52DEC7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +59,10 @@ Global
 		{9318A7A4-67B9-4335-8FB5-C4F75DFCD434}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9318A7A4-67B9-4335-8FB5-C4F75DFCD434}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9318A7A4-67B9-4335-8FB5-C4F75DFCD434}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50B01E77-9144-4095-847B-13260A52DEC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50B01E77-9144-4095-847B-13260A52DEC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50B01E77-9144-4095-847B-13260A52DEC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50B01E77-9144-4095-847B-13260A52DEC7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
