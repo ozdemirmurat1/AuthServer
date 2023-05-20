@@ -40,9 +40,12 @@ namespace UdemyAuthServer.Service
             return Convert.ToBase64String(numberByte);
         }
 
-        private IEnumerable<Claim> GetClaims(UserApp userApp,List<String> audiences)
+        private async Task<IEnumerable<Claim>> GetClaims(UserApp userApp,List<String> audiences)
         {
             // Claim ler payload da gözükecek. Birer claim olarak ekledik Payloadlar jwt sitesinde örnek datalardan bulabilirsin.
+
+            var userRoles = await _userManager.GetRolesAsync(userApp);
+            // ["admin","manager"]
 
             var userList = new List<Claim>
             {
@@ -53,6 +56,7 @@ namespace UdemyAuthServer.Service
             };
 
             userList.AddRange(audiences.Select(x => new Claim(JwtRegisteredClaimNames.Aud, x)));
+            userList.AddRange(userRoles.Select(x => new Claim(ClaimTypes.Role, x)));
 
             return userList;
         }
@@ -83,7 +87,7 @@ namespace UdemyAuthServer.Service
                    issuer:_tokenOption.Issuer,
                    expires:accessTokenExpiration,
                    notBefore:DateTime.Now,
-                   claims:GetClaims(userApp,_tokenOption.Audience),
+                   claims:GetClaims(userApp,_tokenOption.Audience).Result,
                    signingCredentials:signingCredentials
                 );
 
