@@ -49,11 +49,14 @@ namespace UdemyAuthServer.Service
 
             var userList = new List<Claim>
             {
+                // Claim nesneleri string değer alırlar.
+
                 new Claim(ClaimTypes.NameIdentifier,userApp.Id),
                 new Claim(JwtRegisteredClaimNames.Email,userApp.Email),
                 new Claim(ClaimTypes.Name,userApp.UserName),
                 new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
-                new Claim("city",userApp.City)
+                new Claim("city",userApp.City),
+                new Claim("birth-date",userApp.BirthDate.ToShortDateString()),
             };
 
             userList.AddRange(audiences.Select(x => new Claim(JwtRegisteredClaimNames.Aud, x)));

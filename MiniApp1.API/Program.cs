@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MiniApp1.API.Requirements;
 using SharedLibrary.Configuration;
 using SharedLibrary.Extensions;
 
@@ -19,12 +21,20 @@ var tokenOptions = builder.Configuration.GetSection("TokenOption").Get<CustomTok
 
 builder.Services.AddCustomTokenAuth(tokenOptions);
 
+// BirthdayRequirementHandler sýnýfýndan nesne türet
+// veritabaný veya dinamik deðilse singleton kullanmak mantýklý
+builder.Services.AddSingleton<IAuthorizationHandler,BirthDayRequirementHandler>();
 
 builder.Services.AddAuthorization(opts =>
 {
     opts.AddPolicy("AnkaraPolicy", policy =>
     {
         policy.RequireClaim("city", "ankara");
+    });
+
+    opts.AddPolicy("AgePolicy", policy =>
+    {
+        policy.Requirements.Add(new BirthDayRequirement(18));
     });
 });
 
